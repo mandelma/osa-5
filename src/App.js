@@ -5,16 +5,16 @@ import './index.css'
 import Login from './components/loginForm'
 import Blogi from './components/blogiForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 
 const App = () => {
 
   const [message, setMessage] = useState(null)
   const [errMessage, setErrMessage] = useState(null)
-
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState("")
   const [salasana, setSalasana] = useState("")
-
+  const [blogVisible, setBlogVisible] = useState(false)
   const [blogs, setBlogs] = useState([])
   const [title, setTitle] = useState('')
   const [author, setauthor] = useState('')
@@ -63,7 +63,6 @@ const App = () => {
       setUser(user)
       setUsername('')
       setSalasana('')
-      
     }catch(exception){
       setUsername('')
       setSalasana('')
@@ -105,7 +104,7 @@ const App = () => {
     blogService.removeToken()
     setUser(null)
   }
-  
+
   const usernameHandler = (event) => {
     setUsername(event.target.value)
   }
@@ -130,7 +129,6 @@ const App = () => {
     setLikes(event.target.value)
   }
 
-
   return (
     <div>
       <Notification
@@ -151,19 +149,24 @@ const App = () => {
         />
         :
         <div>
-          <Blogi
-            userName = {user.name}
-            logOut = {logOut}
-            handleBlogi = {addBlog}
-            title = {title}
-            author = {author}
-            url = {url}
-            likes = {likes}
-            titleHandler = {titleHandler}
-            authorHandler = {authorHandler}
-            urlHandler = {urlHandler}
-            likesHandler = {likesHandler}
-          />
+          <h1>Blogs</h1>
+          <p>
+            {user.name} logged in&nbsp;&nbsp;
+            <button onClick = {logOut}>Log out</button>
+          </p>
+          <Togglable buttonLabel = 'New blog'>
+            <Blogi              
+              handleBlogi = {addBlog}
+              title = {title}
+              author = {author}
+              url = {url}
+              likes = {likes}
+              titleHandler = {titleHandler}
+              authorHandler = {authorHandler}
+              urlHandler = {urlHandler}
+              likesHandler = {likesHandler}
+            />
+          </Togglable>
           {lueBlogi()}
         </div>
       }

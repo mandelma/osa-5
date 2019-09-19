@@ -4,11 +4,6 @@ const Blogi = (props) => {
     return(
         <div>
             <form onSubmit = {props.handleBlogi}>
-                 <h1>Blogs</h1>
-                 <p>
-                 {props.userName} logged in&nbsp;&nbsp;
-                 <button onClick = {props.logOut}>Log out</button>
-                 </p>
                  <h2>Create new blog</h2>
                  <label>Title:<br/>
                      <input type = "text"
