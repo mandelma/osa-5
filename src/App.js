@@ -4,8 +4,10 @@ import loginService from './services/login'
 import './index.css'
 import Login from './components/loginForm'
 import Blogi from './components/blogiForm'
+import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+
 
 const App = () => {
 
@@ -21,13 +23,22 @@ const App = () => {
   const [url, setUrl] = useState('')
   const [likes, setLikes] = useState('')
 
+  const blogFormRef = React.createRef()
+
   useEffect(() => {
-    blogService
-      .getAll()
-        .then(initialNotes => {
-          setBlogs(initialNotes)
-        })
+    getBlogs()
   }, [])
+
+  const getBlogs = (async () => {
+    const allBlogs = await blogService.getAll()
+    setBlogs(sortBlogs(allBlogs))
+  })
+
+  const sortBlogs = (notSorted) => {
+    return notSorted.sort((start, end) => {
+      return start.likes - end.likes
+    })
+  }
 
 
   useEffect(() => {
@@ -39,15 +50,14 @@ const App = () => {
     }
   }, [])
 
-  const lueBlogi = () => blogs.map(blog => 
-    <p>
-      Title: {blog.title}<br/>
-      Author: {blog.author}<br/>
-      Url: {blog.url}<br/>
-      Likes: {blog.likes}
-    </p>
-    )
-  
+  const readBlogs = () => blogs.map(blog => 
+    <Blog 
+      key = {blog.title}
+      blog = {blog}
+      addLike = {() => addLike(blog)}
+    />
+  )
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try{
@@ -105,10 +115,25 @@ const App = () => {
     setUser(null)
   }
 
+  const addLike = async (like) => {
+    const newLike = like.likes + 1
+    const blog = blogs.find(b => b.id === like.id)
+    const updatedLike = {
+      ...blog, likes: newLike
+    }
+    
+    try{
+      const updated = await blogService.update(blog.id, updatedLike)  
+      setBlogs(blogs.map(blog => blog.id !== like.id ? blog : updated))
+    }catch(exception){
+      console.log(exception)
+    }
+    
+  }
+
   const usernameHandler = (event) => {
     setUsername(event.target.value)
   }
-
   const passwordHandler = (event) => {
     setSalasana(event.target.value)
   }
@@ -167,7 +192,7 @@ const App = () => {
               likesHandler = {likesHandler}
             />
           </Togglable>
-          {lueBlogi()}
+          {readBlogs()}
         </div>
       }
     </div>
