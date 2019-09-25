@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
@@ -8,15 +8,14 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
-
 const App = () => {
 
   const [message, setMessage] = useState(null)
   const [errMessage, setErrMessage] = useState(null)
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState("")
-  const [salasana, setSalasana] = useState("")
-  const [blogVisible, setBlogVisible] = useState(false)
+  const [username, setUsername] = useState('')
+  const [salasana, setSalasana] = useState('')
+  //const [blogVisible, setBlogVisible] = useState(false)
   const [blogs, setBlogs] = useState([])
   const [title, setTitle] = useState('')
   const [author, setauthor] = useState('')
@@ -27,7 +26,7 @@ const App = () => {
 
   useEffect(() => {
     getBlogs()
-  }, [])
+  }, [getBlogs])
 
   const getBlogs = (async () => {
     const allBlogs = await blogService.getAll()
@@ -40,7 +39,6 @@ const App = () => {
     })
   }
 
-
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if(loggedUserJSON){
@@ -50,13 +48,29 @@ const App = () => {
     }
   }, [])
 
-  const readBlogs = () => blogs.map(blog => 
-    <Blog 
+  const readBlogs = () => blogs.map(blog =>
+    <Blog
       key = {blog.title}
       blog = {blog}
+      userName = {user.username}
+      blogiUserName = {blog.user.username}
       addLike = {() => addLike(blog)}
+
+      removeBlog = {() => removeHandler(blog)}
     />
   )
+
+  const removeHandler = async (item) => {
+    try{
+      if(window.confirm(`remove blog ${item.title} by ${item.author}`)){
+        await blogService.remove(item.id)
+        setBlogs(blogs.filter(blog => blog.id !== item.id))
+      }
+    }catch(exception){
+      console.log('Error:', exception)
+    }
+
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -80,11 +94,12 @@ const App = () => {
       setTimeout(() => {
         setErrMessage(null)
       }, 5000)
-    } 
+    }
   }
 
- const addBlog = (event) => {
+  const addBlog = (event) => {
     event.preventDefault()
+    blogFormRef.current.toggleVisibility()
     const blogObject = {
       title: title,
       author: author,
@@ -96,7 +111,6 @@ const App = () => {
       .create(blogObject)
       .then(response => {
         setBlogs(blogs.concat(response))
-        
         setTitle('')
         setauthor('')
         setUrl('')
@@ -106,7 +120,7 @@ const App = () => {
         setTimeout(() => {
           setMessage(null)
         }, 5000)
-      })  
+      })
   }
 
   const logOut = () => {
@@ -121,14 +135,16 @@ const App = () => {
     const updatedLike = {
       ...blog, likes: newLike
     }
-    
+
+    const blogi = blogs.find(blog => blog.id === like.id)
+
     try{
-      const updated = await blogService.update(blog.id, updatedLike)  
-      setBlogs(blogs.map(blog => blog.id !== like.id ? blog : updated))
+      const updated = await blogService.update(blog.id, updatedLike)
+      blogi.likes = updated.likes
+      setBlogs(blogs.map(blog => blog.id === blogi.id ? blogi : blog))
     }catch(exception){
       console.log(exception)
     }
-    
   }
 
   const usernameHandler = (event) => {
@@ -161,39 +177,39 @@ const App = () => {
         msgType = {message !== null ? 'message' : 'error'}
       />
       {
-        user === null 
-        ?
-        <Login
-          handleLogin = {handleLogin} 
-          username = {username}
-          usernameHandler = {usernameHandler}
-          salasana = {salasana}
-          passwordHandler = {passwordHandler}
-          username = {username}
-          salasana = {salasana}
-        />
-        :
-        <div>
-          <h1>Blogs</h1>
-          <p>
-            {user.name} logged in&nbsp;&nbsp;
-            <button onClick = {logOut}>Log out</button>
-          </p>
-          <Togglable buttonLabel = 'New blog'>
-            <Blogi              
-              handleBlogi = {addBlog}
-              title = {title}
-              author = {author}
-              url = {url}
-              likes = {likes}
-              titleHandler = {titleHandler}
-              authorHandler = {authorHandler}
-              urlHandler = {urlHandler}
-              likesHandler = {likesHandler}
-            />
-          </Togglable>
-          {readBlogs()}
-        </div>
+        user === null
+          ?
+          <Login
+            handleLogin = {handleLogin}
+            username = {username}
+            usernameHandler = {usernameHandler}
+            salasana = {salasana}
+            passwordHandler = {passwordHandler}
+            userName = {username}
+            password = {salasana}
+          />
+          :
+          <div>
+            <h1>Blogs</h1>
+            <p>
+              {user.name} logged in&nbsp;&nbsp;
+              <button onClick = {logOut}>Log out</button>
+            </p>
+            <Togglable buttonLabel = 'New blog' ref = {blogFormRef}>
+              <Blogi
+                handleBlogi = {addBlog}
+                title = {title}
+                author = {author}
+                url = {url}
+                likes = {likes}
+                titleHandler = {titleHandler}
+                authorHandler = {authorHandler}
+                urlHandler = {urlHandler}
+                likesHandler = {likesHandler}
+              />
+            </Togglable>
+            {readBlogs()}
+          </div>
       }
     </div>
   )

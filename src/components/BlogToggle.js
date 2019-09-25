@@ -1,29 +1,31 @@
-import React, {useState, useImperativeHandle} from 'react'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
-const BlogToggle = React.forwardRef((props, ref) => {
-    const [visible, setVisible] = useState(false)
+const BlogToggle = (props, ref) => {
 
-    const hideWhenVisible = {display: visible ? 'none' : ''}
-    const showWhenVisible = {display: visible ? '' : 'none'}
+  const [ visible, setVisible ] = useState (false)
 
-    const toggleVisibility = () => {
-        setVisible(!visible)
-    }
+  const hideWhenVisible = { display: visible ? 'none' : '' }
+  const showWhenVisible = { display: visible ? '' : 'none' }
 
-    useImperativeHandle(ref, () => {
-        return(
-            toggleVisibility
-        )
-    })
+  const toggleVisibility = () => {
+    setVisible(!visible)
+  }
 
-    return(
-        <div onClick = {toggleVisibility}> {props.openBlog}
-            <div style = {hideWhenVisible}></div>
-            <div style = {showWhenVisible}>
-                {props.children}
-            </div>
-        </div>
-    )
-})
+  return(
+    <div>
+      <div onClick = {toggleVisibility}> {props.openBlog}
+        <div style = {hideWhenVisible}></div>
+      </div>
+      <div style = {showWhenVisible}>
+        {props.children}
+      </div>
+    </div>
+  )
+}
+
+BlogToggle.propTypes = {
+  openBlog: PropTypes.string.isRequired
+}
 
 export default BlogToggle
