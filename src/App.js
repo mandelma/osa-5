@@ -15,7 +15,6 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [salasana, setSalasana] = useState('')
-  //const [blogVisible, setBlogVisible] = useState(false)
   const [blogs, setBlogs] = useState([])
   const [title, setTitle] = useState('')
   const [author, setauthor] = useState('')
@@ -25,19 +24,9 @@ const App = () => {
   const blogFormRef = React.createRef()
 
   useEffect(() => {
-    getBlogs()
-  }, [getBlogs])
-
-  const getBlogs = (async () => {
-    const allBlogs = await blogService.getAll()
-    setBlogs(sortBlogs(allBlogs))
-  })
-
-  const sortBlogs = (notSorted) => {
-    return notSorted.sort((start, end) => {
-      return start.likes - end.likes
-    })
-  }
+    blogService.getAll()
+      .then(response => setBlogs(response))
+  }, [])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -69,7 +58,6 @@ const App = () => {
     }catch(exception){
       console.log('Error:', exception)
     }
-
   }
 
   const handleLogin = async (event) => {

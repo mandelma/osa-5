@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
 
 const BlogToggle = (props, ref) => {
 
@@ -14,18 +13,14 @@ const BlogToggle = (props, ref) => {
 
   return(
     <div>
-      <div onClick = {toggleVisibility}> {props.openBlog}
+      <div onClick = {toggleVisibility} className = 'show'> {props.openBlog}
         <div style = {hideWhenVisible}></div>
       </div>
-      <div style = {showWhenVisible}>
+      <div style = {showWhenVisible} className = 'toggleContent'>
         {props.children}
       </div>
     </div>
   )
-}
-
-BlogToggle.propTypes = {
-  openBlog: PropTypes.string.isRequired
 }
 
 export default BlogToggle

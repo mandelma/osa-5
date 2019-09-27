@@ -12,11 +12,16 @@ const Blog = ({ blog, addLike, removeBlog, userName, blogiUserName }) => {
 
   }
 
-  const showOrNot = { display: userName === blogiUserName ? '' : 'none' }
+  /* const blogTitle = () => {
+    return <div>{blog.title} added by {blog.author}</div>
+  } */
 
+  const blogTitle = <div>{blog.title} added by {blog.author}</div>
+
+  const showOrNot = { display: userName === blogiUserName ? '' : 'none' }
   return(
-    <div style = {blogStyle}>
-      <BlogToggle openBlog = {blog.title}>
+    <div style = {blogStyle} className = 'blogi'>
+      <BlogToggle openBlog = {blogTitle}>
         <div>
           <a href = {blog.url}>{blog.url}</a><br/>
           {blog.likes} likes&nbsp;&nbsp;
@@ -33,10 +38,10 @@ const Blog = ({ blog, addLike, removeBlog, userName, blogiUserName }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  addLike: PropTypes.func.isRequired,
-  removeBlog: PropTypes.func.isRequired,
-  userName: PropTypes.string.isRequired,
-  blogiUserName: PropTypes.string.isRequired
+  addLike: PropTypes.func,
+  removeBlog: PropTypes.func,
+  userName: PropTypes.string,
+  blogiUserName: PropTypes.string
 }
 
 export default Blog
