@@ -150,12 +150,8 @@ const App = () => {
           ?
           <Login
             handleLogin = {handleLogin}
-            usernameType = {username.type}
-            usernameValue = {username.value}
-            usernameHandler = {username.onChange}
-            passwordHandler = {salasana.onChange}
-            pwType = {salasana.type}
-            pwValue = {salasana.value}
+            username = {username}
+            password = {salasana}
           />
           :
           <div>
@@ -167,10 +163,10 @@ const App = () => {
             <Togglable buttonLabel = 'New blog' ref = {blogFormRef}>
               <Blogi
                 handleBlogi = {addBlog}
-                title = {title.value} titleType = {title.type} titleHandler = {title.onChange}
-                author = {author.value} authorType = {author.type} authorHandler = {author.onChange}
-                url = {url.value} urlType = {url.type} urlHandler = {url.onChange}
-                likes = {likes.value} likesType = {likes.type} likesHandler = {likes.onChange}
+                title = {title}
+                author = {author}
+                url = {url}
+                likes = {likes}
               />
             </Togglable>
             {readBlogs()}

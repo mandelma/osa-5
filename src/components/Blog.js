@@ -12,10 +12,6 @@ const Blog = ({ blog, addLike, removeBlog, userName, blogiUserName }) => {
 
   }
 
-  /* const blogTitle = () => {
-    return <div>{blog.title} added by {blog.author}</div>
-  } */
-
   const blogTitle = <div>{blog.title} added by {blog.author}</div>
 
   const showOrNot = { display: userName === blogiUserName ? '' : 'none' }
