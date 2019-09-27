@@ -6,25 +6,25 @@ const Blogi = (props) => {
       <form onSubmit = {props.handleBlogi}>
         <h2>Create new blog</h2>
         <label>Title:<br/>
-          <input type = "text"
+          <input type = {props.titleType}
             value = {props.title}
             onChange = {props.titleHandler}>
           </input><br/>
         </label>
         <label>Author:<br/>
-          <input type = "text"
+          <input type = {props.authorType}
             value = {props.author}
             onChange = {props.authorHandler}>
           </input>
         </label><br/>
         <label>Url:<br/>
-          <input type = "text"
+          <input type = {props.urlType}
             value = {props.url}
             onChange = {props.urlHandler}>
           </input>
         </label><br/>
         <label>Likes:<br/>
-          <input type = "text"
+          <input type = {props.likesType}
             value = {props.likes}
             onChange = {props.likesHandler}>
           </input>

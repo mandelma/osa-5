@@ -6,14 +6,14 @@ const Login = (props) => {
       <form onSubmit = {props.handleLogin}>
         <h2>Log in to application:</h2>
         <label>Username:<br/>
-          <input type = "text"
-            value = {props.userName}
+          <input type = {props.usernameType}
+            value = {props.usernameValue}
             onChange = {props.usernameHandler}>
           </input><br/>
         </label>
         <label>Password:<br/>
-          <input type = "password"
-            value = {props.password}
+          <input type = {props.pwType}
+            value = {props.pwValue}
             onChange = {props.passwordHandler}>
           </input><br/>
         </label><br></br>

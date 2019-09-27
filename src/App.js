@@ -8,18 +8,22 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
+import { useField } from './hooks'
+
 const App = () => {
+
+  const username = useField('text')
+  const salasana = useField('password')
+
+  const title = useField('text')
+  const author = useField('text')
+  const url = useField('text')
+  const likes = useField('text')
 
   const [message, setMessage] = useState(null)
   const [errMessage, setErrMessage] = useState(null)
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [salasana, setSalasana] = useState('')
   const [blogs, setBlogs] = useState([])
-  const [title, setTitle] = useState('')
-  const [author, setauthor] = useState('')
-  const [url, setUrl] = useState('')
-  const [likes, setLikes] = useState('')
 
   const blogFormRef = React.createRef()
 
@@ -64,8 +68,8 @@ const App = () => {
     event.preventDefault()
     try{
       const user = await loginService.login({
-        username: username,
-        password: salasana
+        username: username.value,
+        password: salasana.value
       })
 
       window.localStorage.setItem(
@@ -73,11 +77,11 @@ const App = () => {
       )
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setSalasana('')
+      username.cleanField()
+      salasana.cleanField()
     }catch(exception){
-      setUsername('')
-      setSalasana('')
+      username.cleanField()
+      salasana.cleanField()
       setErrMessage('Wrong username or password!')
       setTimeout(() => {
         setErrMessage(null)
@@ -89,20 +93,20 @@ const App = () => {
     event.preventDefault()
     blogFormRef.current.toggleVisibility()
     const blogObject = {
-      title: title,
-      author: author,
-      url: url,
-      likes: likes
+      title: title.value,
+      author: author.value,
+      url: url.value,
+      likes: likes.value
     }
 
     blogService
       .create(blogObject)
       .then(response => {
         setBlogs(blogs.concat(response))
-        setTitle('')
-        setauthor('')
-        setUrl('')
-        setLikes('')
+        title.cleanField()
+        author.cleanField()
+        url.cleanField()
+        likes.cleanField()
 
         setMessage(`A new blog ${response.title} by ${response.author} added!`)
         setTimeout(() => {
@@ -135,29 +139,6 @@ const App = () => {
     }
   }
 
-  const usernameHandler = (event) => {
-    setUsername(event.target.value)
-  }
-  const passwordHandler = (event) => {
-    setSalasana(event.target.value)
-  }
-
-  const titleHandler = (event) => {
-    setTitle(event.target.value)
-  }
-
-  const authorHandler = (event) => {
-    setauthor(event.target.value)
-  }
-
-  const urlHandler = (event) => {
-    setUrl(event.target.value)
-  }
-
-  const likesHandler = (event) => {
-    setLikes(event.target.value)
-  }
-
   return (
     <div>
       <Notification
@@ -169,12 +150,12 @@ const App = () => {
           ?
           <Login
             handleLogin = {handleLogin}
-            username = {username}
-            usernameHandler = {usernameHandler}
-            salasana = {salasana}
-            passwordHandler = {passwordHandler}
-            userName = {username}
-            password = {salasana}
+            usernameType = {username.type}
+            usernameValue = {username.value}
+            usernameHandler = {username.onChange}
+            passwordHandler = {salasana.onChange}
+            pwType = {salasana.type}
+            pwValue = {salasana.value}
           />
           :
           <div>
@@ -186,14 +167,10 @@ const App = () => {
             <Togglable buttonLabel = 'New blog' ref = {blogFormRef}>
               <Blogi
                 handleBlogi = {addBlog}
-                title = {title}
-                author = {author}
-                url = {url}
-                likes = {likes}
-                titleHandler = {titleHandler}
-                authorHandler = {authorHandler}
-                urlHandler = {urlHandler}
-                likesHandler = {likesHandler}
+                title = {title.value} titleType = {title.type} titleHandler = {title.onChange}
+                author = {author.value} authorType = {author.type} authorHandler = {author.onChange}
+                url = {url.value} urlType = {url.type} urlHandler = {url.onChange}
+                likes = {likes.value} likesType = {likes.type} likesHandler = {likes.onChange}
               />
             </Togglable>
             {readBlogs()}
